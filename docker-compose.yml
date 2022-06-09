@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  reconciliation-service:
+    build:
+      context: reconciliation-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    restart: always
+    networks:
+      - backend
+      - frontend
+  reconciliation-app:
+    build:
+      context: reconciliation-app
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_BASE_URL: http://localhost:8081
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - reconciliation-service
+    networks:
+      - frontend
+networks:
+  backend:
+  frontend:
