@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import UnmatchedReport from "./UnmatchedReport";
 import SummaryReport from "./SummaryReport";
@@ -31,8 +31,13 @@ const ReportFieldset = styled.fieldset`
 `;
 
 function ReconciliationResult(props) {
-  const { clientResult, orgResult } = props.data || {};
+  const data = props.data;
+  const { clientResult, orgResult } = data || {};
   const [showUnmatchedReport, setShowUnmatchedReport] = useState(false);
+
+  useEffect(() => {
+    setShowUnmatchedReport(false);
+  }, [data]);
 
   return (
     <>

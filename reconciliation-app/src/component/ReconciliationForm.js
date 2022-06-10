@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { apiBaseUrl } from "../util/env";
@@ -35,8 +35,9 @@ function ReconciliationForm(props) {
   const { setResponseData } = props;
   const orgFile = React.createRef();
   const clientFile = React.createRef();
+  const [loading, setLoading] = useState(false);
 
-  const { handleSubmit, register } = useForm({
+  const { handleSubmit } = useForm({
     mode: "onBlur",
   });
 
@@ -63,11 +64,14 @@ function ReconciliationForm(props) {
   };
 
   const onSubmitFn = (data) => {
+    setLoading(true);
+    setResponseData(null);
     fetch(apiBaseUrl + "/api/transactions/compare", {
       method: "post",
       body: getFormData(data),
     })
       .then((response) => {
+        setLoading(false);
         const data = response.json();
         if (response.ok) {
           return data;
@@ -88,7 +92,13 @@ function ReconciliationForm(props) {
         <form onSubmit={handleSubmit(onSubmitFn)}>
           <InputWrapper>
             <label>Organization file:</label>
-            <input type="file" name="orgFile" ref={orgFile} accept=".csv" />
+            <input
+              type="file"
+              name="orgFile"
+              ref={orgFile}
+              accept=".csv"
+              required
+            />
           </InputWrapper>
           <InputWrapper>
             <label>Client file:</label>
@@ -97,12 +107,13 @@ function ReconciliationForm(props) {
               name="clientFile"
               ref={clientFile}
               accept=".csv"
+              required
             />
           </InputWrapper>
           <SubmitButton
             type="submit"
             className="submit-button"
-            value="Compare"
+            value={loading ? "Loading" : "Compare"}
           />
         </form>
       </FormWrapper>
