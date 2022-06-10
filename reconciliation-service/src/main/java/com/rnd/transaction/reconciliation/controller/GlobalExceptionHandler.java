@@ -1,6 +1,6 @@
 package com.rnd.transaction.reconciliation.controller;
 
-import com.rnd.transaction.reconciliation.dto.response.ErrorResponse;
+import com.rnd.transaction.reconciliation.response.ErrorResponse;
 import com.rnd.transaction.reconciliation.exception.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

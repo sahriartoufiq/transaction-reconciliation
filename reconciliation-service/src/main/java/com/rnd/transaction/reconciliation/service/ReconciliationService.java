@@ -1,7 +1,7 @@
 package com.rnd.transaction.reconciliation.service;
 
 import com.rnd.transaction.reconciliation.dto.TransactionDetailDTO;
-import com.rnd.transaction.reconciliation.dto.response.ReconciliationResponse;
+import com.rnd.transaction.reconciliation.response.ReconciliationResponse;
 import com.rnd.transaction.reconciliation.exception.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -2,13 +2,17 @@ package com.rnd.transaction.reconciliation.service;
 
 import com.rnd.transaction.reconciliation.dto.TransactionDetailDTO;
 import com.rnd.transaction.reconciliation.dto.UnmatchedRecord;
-import com.rnd.transaction.reconciliation.util.TransactionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.rnd.transaction.reconciliation.util.StringUtils.getTrimmedLowerCaseValue;
+
+@Slf4j
 @Service
 public class TransactionHelperService {
 
@@ -17,7 +21,7 @@ public class TransactionHelperService {
 
         return dataList.stream()
                 .filter(trxData -> {
-                    var key = TransactionUtils.getTrxKeyWithTrxId(trxData);
+                    var key = getTrxKeyWithTrxId(trxData);
 
                     if (trxIdDataMap.containsKey(key)) {
                         trxIdDataMap.remove(key);
@@ -40,10 +44,10 @@ public class TransactionHelperService {
                         .transactionId(transaction.getTransactionID())
                         .transactionDescription(transaction.getTransactionDescription())
                         .transactionDate(transaction.getTransactionDate())
-                        .transactionAmount(transaction.getTransactionAmount())
+                        .transactionAmount(getParsedValueString(transaction.getTransactionAmount()))
                         .walletReference(transaction.getWalletReference())
                         .probableMatchTrxId(otherPartyDataMap
-                                .get(TransactionUtils.getTrxKeyWithoutTrxId(transaction)))
+                                .get(getTrxKeyWithoutTrxId(transaction)))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -52,7 +56,7 @@ public class TransactionHelperService {
         return trxDataList
                 .stream()
                 .collect(Collectors
-                        .toMap(TransactionUtils::getTrxKeyWithTrxId,
+                        .toMap(this::getTrxKeyWithTrxId,
                                 trxDetail -> trxDetail,
                                 (trx1, trx2) -> trx1));
     }
@@ -61,8 +65,35 @@ public class TransactionHelperService {
         return trxDataList
                 .stream()
                 .collect(Collectors
-                        .toMap(TransactionUtils::getTrxKeyWithoutTrxId,
+                        .toMap(this::getTrxKeyWithoutTrxId,
                                 TransactionDetailDTO::getTransactionID,
                                 (trx1, trx2) -> trx1));
+    }
+
+    private String getTrxKeyWithTrxId(TransactionDetailDTO transaction) {
+        return String.format("%s-%s",
+                transaction.getTransactionID(),
+                getTrimmedLowerCaseValue(transaction.getTransactionDescription()));
+    }
+
+    private String getTrxKeyWithoutTrxId(TransactionDetailDTO transaction) {
+        return String.format("%s-%s-%s-%s",
+                getTrimmedLowerCaseValue(transaction.getWalletReference()),
+                getTrimmedLowerCaseValue(transaction.getTransactionType()),
+                getTrimmedLowerCaseValue(getParsedValueString(transaction.getTransactionAmount())),
+                getTrimmedLowerCaseValue(transaction.getTransactionDate()));
+    }
+
+    private String getParsedValueString(String transactionAmount) {
+        try {
+            return new BigDecimal(transactionAmount)
+                    .stripTrailingZeros()
+                    .toPlainString();
+        } catch (Exception ex) {
+            log.error("Failed to parse and convert transaction amount - {}, error - {}",
+                    transactionAmount, ex.getMessage());
+
+            return transactionAmount;
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.rnd.transaction.reconciliation.dto.response;
+package com.rnd.transaction.reconciliation.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

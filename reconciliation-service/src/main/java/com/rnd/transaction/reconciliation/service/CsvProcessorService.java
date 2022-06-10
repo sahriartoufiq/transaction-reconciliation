@@ -19,6 +19,9 @@ public class CsvProcessorService {
 
         return new CsvToBeanBuilder<T>(buffer)
                 .withType(recordType)
+                .withSkipLines(1)
+                .withIgnoreLeadingWhiteSpace(true)
+                .withIgnoreEmptyLine(true)
                 .build()
                 .parse();
     }

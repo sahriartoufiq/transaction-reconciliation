@@ -1,4 +1,4 @@
-package com.rnd.transaction.reconciliation.dto.response;
+package com.rnd.transaction.reconciliation.response;
 
 import com.rnd.transaction.reconciliation.dto.TrxComparisonDTO;
 import lombok.AllArgsConstructor;

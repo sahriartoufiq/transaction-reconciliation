@@ -1,7 +1,7 @@
 package com.rnd.transaction.reconciliation.controller;
 
 import com.rnd.transaction.reconciliation.service.ReconciliationService;
-import com.rnd.transaction.reconciliation.dto.response.ReconciliationResponse;
+import com.rnd.transaction.reconciliation.response.ReconciliationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
